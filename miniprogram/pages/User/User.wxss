@@ -1,0 +1,23 @@
+/* miniprogram/pages/test/test.wxss */
+.all{
+  display: inline-flex;
+  width:100%;
+  height:100%;
+  background-color:rgba(236, 227, 236, 0.973);
+}
+.Head{
+  margin-top:50rpx;
+  width: 200rpx;
+  height:200rpx;
+  border-radius: 50%;
+}
+.Name{
+  height: 20rpx;
+  width: auto;
+  margin-top:125rpx;
+  size: 20rpx;
+  font-weight: bold;
+  font-family:Songti;
+  font-size:40rpx;
+  margin-left:50rpx;
+}

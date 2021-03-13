@@ -1,0 +1,76 @@
+<page>
+  <view class="page">
+    <movable-area class="top">
+      <movable-view class="topmove" direction="horizontal" inertia damping="100">
+        <button style="background-color:{{bt0}};" bindtap="bt0click">未开始</button>
+        <button style="background-color:{{bt1}};" bindtap="bt1click">进行中</button>
+        <button style="background-color:{{bt2}};" bindtap="bt2click">已完成</button>
+      </movable-view>
+    </movable-area>
+    <swiper class="container" duration="200" easing-function="default" bindchange="PageChange" current="{{touchId}}"
+      wx:if="{{!newStatus}}">
+      <swiper-item>
+        <view wx:for="{{undo}}" wx:key="item" class="undo_Title" bindlongpress="delpressUndo"
+          wx:for-index="index" data-index="{{index}}">
+          <view class="title" data-index="{{index}}">{{item.title}}</view>
+          <view style="margin-top:20rpx;margin-left:15rpx">开始时间 : {{item.date}}</view>
+        </view>
+        <text wx:if="{{!undo_Num}}" class="undo">
+          您还没有未做的任务
+        </text>
+      </swiper-item>
+      <swiper-item style="position: absolute; left: -1rpx; top: 0rpx">
+        <view wx:for="{{doing}}" wx:key="item" class="undo_Title" bindlongpress="delpressDoing"
+          wx:for-index="index" data-index="{{index}}">
+          <text class="title">{{item.title}}</text>
+          <view style="margin-top:20rpx;margin-left:15rpx">开始时间 : {{item.date}}</view>
+        </view>
+        <view wx:if="{{!doing_Num}}" class="doing">
+          您没有进行中的任务
+        </view>
+      </swiper-item>
+      <swiper-item>
+        <view wx:for="{{finished}}" wx:key="item" class="undo_Title" bindlongpress="delpressFin"
+          wx:for-index="index" data-index="{{index}}">
+          <text class="title" data-index="{{index}}">{{item.title}}</text>
+          <view style="margin-top:20rpx;margin-left:15rpx">结束时间 : {{item.date}}</view>
+        </view>
+        <view wx:if="{{!finished_Num}}" class="finished">
+          恭喜你完成了所有任务
+        </view>
+      </swiper-item>
+    </swiper>
+    <view wx:if="{{newStatus}}" class="newfile">
+      <form bindsubmit="formSubmit">
+        <view>*标题</view>
+        <input type="text" class="input" placeholder="输入事件标题" name="title" />
+        <view>*开始日期</view>
+        <picker mode="date" start="2021-01-01" end="2030-12-30" value="{{date}}" style="width:80%" bindchange="DateChange" name="date">
+          <view class="pick">
+            {{date}}
+          </view>
+        </picker>
+        <view>*开始时间</view>
+        <picker mode="time" value="{{time}}" bindchange="TimeChange" start="08:00"  name="Time">
+          <view class="pick">
+            {{time}}
+          </view>
+        </picker>
+        <view style="margin-top:40rpx;">内容</view>
+        <textarea style="width:80%;height:200rpx;border:solid #aaaaaa;margin-top:10rpx;background-color:{{textColor}}"
+          confirm-typ="return" bindconfirm="confirm" bindfocus="focus" bindblur="unfocus" name="textArea">
+        </textarea>
+        <view style="display:flex">
+          <button style="width:200rpx;margin-top:10%;margin-left:4%" bindtap="back">返回</button>
+          <button style="width:200rpx;margin-top:10%;margin-left:0rpx" form-type="submit" type="primary">确定</button>
+        </view>
+      </form>
+    </view>
+  </view>
+  <view class="add">
+    <button class="addbt" bindtap="newTarget">
+      <image src="../../images/添加.png" class="bkimg"></image>
+    </button>
+  </view>
+
+</page>
