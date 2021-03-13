@@ -24,16 +24,22 @@ Page({
   onLoad: function () {
     let that = this;
     //调用云函数得到用户OPENID
-    if (!that.OPENID) {
+    var app = getApp();
+    console.log(app)
+
+    if(app.globalData.tag == 0){
       wx.cloud.callFunction({
-        name: 'login',
-        complete: res => {
+        name:"login",
+        complete:function(res){
+          app.globalData.tag = 1;
+          console.log(res)
           that.setData({
-            OPENID: res.result.OPENID,
+            OPENID:res.result.OPENID
           })
         }
       })
     }
+
     this.checkUser()
   },
   checkUser: function () {
@@ -42,21 +48,18 @@ Page({
     DB.collection('user_sign').where({
         _openid: that.data.OPENID,
         content: _.exists(true),
-        finished:_.exists(true)
+        finished: _.exists(true)
       })
       .get({
         success: function (res) {
           var nameId = res.data[0]._id;
-          // console.log(nameId)
           var doing = new Array();
           var undo = new Array();
           var finished = new Array();
           var doing_index = new Array();
           var undo_index = new Array();
-          // var finished_index = new Array();
-           finished = res.data[0].finished.slice(0);
+          finished = res.data[0].finished.slice(0);
           var length = res.data[0].content.length;
-          console.log(length)
           for (var i = 0; i < length; i++) {
             var MissionTime = new Date(res.data[0].content[i].date.replace(/-/g, '/')).getTime();
             if (nowTime >= MissionTime) {
@@ -69,8 +72,6 @@ Page({
               undo_index.push(i);
             }
           }
-          console.log(doing)
-          console.log(undo)
           that.setData({
             ID: nameId,
             content: res.data[0].content,
@@ -88,7 +89,6 @@ Page({
           return true
         },
         fail: function (res) {
-          console.log(res)
           wx.showModal({
             title: '提示',
             content: '你还没有创建一个任务，点击确定可以授权登录再创建',
@@ -143,7 +143,6 @@ Page({
     this.setData({
       textColor: null
     })
-    // console.log(e.detail.value)
   },
   PageChange: function (event) {
     var touchId = event.detail.current
@@ -210,7 +209,6 @@ Page({
               that.onLoad()
             },
             fail: function (e) {
-              console.log(e)
             }
           })
         } else {
@@ -221,7 +219,6 @@ Page({
               content: that.data.content
             },
             success: (res) => {
-              // console.log(res)
               that.onLoad();
               wx.showToast({
                 title: '成功',
@@ -238,7 +235,7 @@ Page({
         }
       },
       fail(res) {
-        console.log(res.errMsg)
+        // console.log(res.errMsg)
       }
     })
   },
@@ -257,11 +254,11 @@ Page({
         var temp = that.data.finished;
         temp.push(temp_value);
         if (index_choice == 0) {
-         // 更新数据库，改变该条任务状态为完成
+          // 更新数据库，改变该条任务状态为完成
           DB.collection('user_sign').doc(that.data.ID).update({
             data: {
               content: that.data.content,
-              finished:temp
+              finished: temp
             },
             success: (res) => {
               // console.log(res)
@@ -278,7 +275,7 @@ Page({
 
             }
           })
-          
+
         } else {
           //删除任务
           DB.collection('user_sign').doc(that.data.ID).update({
@@ -303,10 +300,10 @@ Page({
         }
       },
       fail(res) {
-        console.log(res.errMsg)
+        // console.log(res.errMsg)
       }
     })
-  
+
 
 
   },
@@ -323,11 +320,11 @@ Page({
           var temp = that.data.finished[index];
           temp.date = that.timestampToTime(nowTime);
           that.data.content.push(temp);
-          that.data.finished.splice(index,1);
+          that.data.finished.splice(index, 1);
           DB.collection('user_sign').doc(that.data.ID).update({
             data: {
-             content:that.data.content,
-             finished:that.data.finished
+              content: that.data.content,
+              finished: that.data.finished
             },
             success: function (e) {
               wx.showToast({
@@ -342,15 +339,15 @@ Page({
 
         } else {
           //删除任务
-          that.data.finished.splice(index,1);
+          that.data.finished.splice(index, 1);
           DB.collection('user_sign').doc(that.data.ID).update({
             data: {
-              finished:that.data.finished
+              finished: that.data.finished
             },
             success: (res) => {
               // console.log(res)
               that.onLoad();
-              console.log(res)
+              // console.log(res)
               wx.showToast({
                 title: '成功',
               })
@@ -404,7 +401,7 @@ Page({
         showCancel: false
       })
     }
-    
+
 
   },
   back: function (e) {
@@ -418,9 +415,35 @@ Page({
     if (that.data.OPENID) {
       that.setData({
         newStatus: true,
-        bt1:"white",
-        bt2:"transparent",
-        bt0:"transparent"
+        bt1: "white",
+        bt2: "transparent",
+        bt0: "transparent"
+      })
+    }
+  },
+  showcontent: function (e) {
+    // console.log(e)
+    let that = this;
+    var tag = e.currentTarget.dataset.tag;
+    var index = e.currentTarget.dataset.index;
+    if (tag === "undo") {
+      wx.showModal({
+        title: "内容",
+        content: that.data.undo[index].content,
+        showCancel: false
+      })
+    } else if (tag === "doing") {
+      wx.showModal({
+        title: "内容",
+        content: that.data.doing[index].content,
+        showCancel: false
+
+      })
+    } else {
+      wx.showModal({
+        title: "内容",
+        content: that.data.finished[index].content,
+        showCancel: false
       })
     }
   },
@@ -456,7 +479,7 @@ Page({
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
-
+    this.onLoad();
   },
 
   /**

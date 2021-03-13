@@ -11,7 +11,7 @@
       wx:if="{{!newStatus}}">
       <swiper-item>
         <view wx:for="{{undo}}" wx:key="item" class="undo_Title" bindlongpress="delpressUndo"
-          wx:for-index="index" data-index="{{index}}">
+          wx:for-index="index" data-index="{{index}}" bindtap="showcontent" data-tag="undo">
           <view class="title" data-index="{{index}}">{{item.title}}</view>
           <view style="margin-top:20rpx;margin-left:15rpx">开始时间 : {{item.date}}</view>
         </view>
@@ -21,7 +21,7 @@
       </swiper-item>
       <swiper-item style="position: absolute; left: -1rpx; top: 0rpx">
         <view wx:for="{{doing}}" wx:key="item" class="undo_Title" bindlongpress="delpressDoing"
-          wx:for-index="index" data-index="{{index}}">
+          wx:for-index="index" data-index="{{index}}"  bindtap="showcontent" data-tag="doing">
           <text class="title">{{item.title}}</text>
           <view style="margin-top:20rpx;margin-left:15rpx">开始时间 : {{item.date}}</view>
         </view>
@@ -31,7 +31,7 @@
       </swiper-item>
       <swiper-item>
         <view wx:for="{{finished}}" wx:key="item" class="undo_Title" bindlongpress="delpressFin"
-          wx:for-index="index" data-index="{{index}}">
+          wx:for-index="index" data-index="{{index}}"  bindtap="showcontent" data-tag="finished">
           <text class="title" data-index="{{index}}">{{item.title}}</text>
           <view style="margin-top:20rpx;margin-left:15rpx">结束时间 : {{item.date}}</view>
         </view>
@@ -57,7 +57,7 @@
           </view>
         </picker>
         <view style="margin-top:40rpx;">内容</view>
-        <textarea style="width:80%;height:200rpx;border:solid #aaaaaa;margin-top:10rpx;background-color:{{textColor}}"
+        <textarea style="width:80%;height:200rpx;border:solid whitesmoke;margin-top:10rpx;background-color:{{textColor}}"
           confirm-typ="return" bindconfirm="confirm" bindfocus="focus" bindblur="unfocus" name="textArea">
         </textarea>
         <view style="display:flex">

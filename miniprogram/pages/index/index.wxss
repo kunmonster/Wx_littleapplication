@@ -37,7 +37,7 @@
   position: relative;
   width:100%;
   height:5%;
-  background-color:#fadcf1e5;
+  background-color:rgba(236, 227, 236, 0.973);
 }
 .topmove{
   display: flex;
@@ -86,7 +86,7 @@
   font-weight: 500;
 }
 .undo_Title{
-  background-color:white;
+  background-color:whitesmoke;
   display: flex;
   position: relative;
   width: 100%;
@@ -103,7 +103,7 @@
   margin-left: 15rpx;
 }
 .newfile{
-  background: rgb(226, 225, 225);
+  background: rgba(236, 227, 236, 0.973);
   position:fixed;
   display: flexbox;
   width: 100%;
@@ -116,11 +116,11 @@
   height:60rpx;
   margin:20rpx 0;
   display: block;
-  border:solid #aaaaaa;
+  border:solid whitesmoke;
 }
 .pick{
   width:200rpx;
   font-size:35rpx;
   margin:20rpx 0  40rpx;
-  border:solid 2px #aaaaaa;
+  border:solid 2px whitesmoke;
 }
