@@ -69,7 +69,7 @@
   </view>
   <view class="add">
     <button class="addbt" bindtap="newTarget">
-      <image src="../../images/添加.png" class="bkimg"></image>
+      <image src="cloud://demo3-9gcfnciq7761675c.6465-demo3-9gcfnciq7761675c-1304879154/添加.png" class="bkimg"></image>
     </button>
   </view>
 

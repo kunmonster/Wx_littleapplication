@@ -19,7 +19,7 @@
   "sitemapLocation": "sitemap.json",
   "style": "v2",
   "tabBar": {
-    "backgroundColor": "#f6f6f6",
+    "backgroundColor": "#ECE3E6",
     "position": "bottom",
     "list": [{
         "pagePath": "pages/index/index",

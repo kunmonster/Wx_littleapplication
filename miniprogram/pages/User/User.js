@@ -13,25 +13,25 @@ Page({
    */
   onLoad: function (options) {
     var that = this;
-    wx.getSetting({
-      success(res) {
-        if (res.authSetting['scope.userInfo']) {
-          // 已经授权，可以直接调用 getUserInfo 获取头像昵称
-          wx.getUserInfo({
-            success: function (res) {
-              that.setData({
-                nickName: res.userInfo.nickName,
-                city: res.userInfo.city,
-                avatarUrl:res.userInfo.avatarUrl
-              })
+    // wx.getSetting({
+    //   success(res) {
+    //     if (res.authSetting['scope.userInfo']) {
+    //       // 已经授权，可以直接调用 getUserInfo 获取头像昵称
+    //       wx.getUserInfo({
+    //         success: function (res) {
+    //           that.setData({
+    //             nickName: res.userInfo.nickName,
+    //             city: res.userInfo.city,
+    //             avatarUrl:res.userInfo.avatarUrl
+    //           })
 
-            }
-          })
-        } else {
-          console.log("未授权")
-        }
-      }
-    })
+    //         }
+    //       })
+    //     } else {
+    //       console.log("未授权")
+    //     }
+    //   }
+    // })
   },
 
 

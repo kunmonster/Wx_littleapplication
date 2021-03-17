@@ -1,3 +1,5 @@
+
+
 const DB = wx.cloud.database();
 const _ = DB.command;
 var now = new Date();
@@ -15,7 +17,9 @@ Page({
     finished_Num: 0,
     bt1: "white",
     touchId: 1, //页面初始化的时候的页面(doing)
-    newStatus: false
+    newStatus: false,
+    date: "2021-01-01",
+    time: '08:00'
   },
 
   /**
@@ -25,14 +29,14 @@ Page({
     let that = this;
     //调用云函数得到用户OPENID
     var app = getApp();
-    console.log(app)
+    // console.log(app)
 
     if(app.globalData.tag == 0){
       wx.cloud.callFunction({
         name:"login",
         complete:function(res){
           app.globalData.tag = 1;
-          console.log(res)
+          // console.log(res)
           that.setData({
             OPENID:res.result.OPENID
           })
@@ -47,18 +51,20 @@ Page({
     //查询用户是否在后台存在,如果存在将用户的信息从数据库拿出来
     DB.collection('user_sign').where({
         _openid: that.data.OPENID,
-        content: _.exists(true),
-        finished: _.exists(true)
+        content: _.exists(true)
       })
       .get({
         success: function (res) {
+          if(res.data.length != 0){
           var nameId = res.data[0]._id;
           var doing = new Array();
           var undo = new Array();
           var finished = new Array();
           var doing_index = new Array();
           var undo_index = new Array();
-          finished = res.data[0].finished.slice(0);
+          if(res.data[0].finished){
+            finished = res.data[0].finished.slice(0);
+          }
           var length = res.data[0].content.length;
           for (var i = 0; i < length; i++) {
             var MissionTime = new Date(res.data[0].content[i].date.replace(/-/g, '/')).getTime();
@@ -83,22 +89,38 @@ Page({
             finished_Num: finished.length,
             doing_index: doing_index,
             undo_index: undo_index,
-            date: "2021-01-01",
-            time: '08:00'
+           
           })
           return true
-        },
-        fail: function (res) {
+        }
+        else{
+          if(that.data.userStatus == 0){
           wx.showModal({
             title: '提示',
             content: '你还没有创建一个任务，点击确定可以授权登录再创建',
             success: function (res) {
               if (res.confirm) {
                 //用户点击确定授权登录
+                wx.authorize({
+                  scope: 'scope.userInfo',
+                  success:function(res){
+                    that.setData({
+                      userStatus:1
+                    })
+                    return true
+                  }
+                })
+              }
+              else{
+                that.setData({
+                  userStatus:0
+                })
               }
             }
           })
+        }
           return false
+        }
         }
       })
   },
@@ -374,9 +396,30 @@ Page({
       date: e.detail.value.date + " " + e.detail.value.Time,
       content: e.detail.value.textArea
     };
+    
 
     if ((newContent.title != "") && (newContent.content != "")) {
       //先查询在数据库中是否存在该用户
+      var value = newContent.content + newContent.title; //提供给云函数检测是否合法
+      wx.cloud.callFunction({
+        //调用接口检测标题和内容是否合法
+        name:"check",
+        data:{
+          value
+        },
+        complete:function(res){
+          // console.log(res.result)
+          if(res.result.errMsg.substr(-2,2) != "ok" || res.result.errCode == 87014){
+            //包含敏感词汇提示用户重新输入
+            wx.showModal({
+              title:"提示",
+              content:"您输入的内容包含敏感词汇，请重新输入",
+              showCancel: false
+            })
+            return false;
+          }
+        }
+      })
       if (that.data.content == null) {
         DB.collection('user_sign').add({
           data: {

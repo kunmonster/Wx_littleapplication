@@ -1,4 +1,7 @@
 <view class="all">
-  <image src="{{avatarUrl}}" class="Head"></image>
-  <view class="Name">{{nickName}}</view>
+  <view class="Head">
+    <open-data type="userAvatarUrl"></open-data>
+  </view>
+  <open-data lang="zh_CN" type="userNickName" class="Name"></open-data>
+
 </view>
